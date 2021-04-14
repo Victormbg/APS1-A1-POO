@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import javax.swing.border.BevelBorder;
@@ -49,7 +50,9 @@ public class PrincipalView extends JFrame {
 			modelo.addRow(linha);
 		}
 		LoadCbEmp();
+		LoadCbCli();
 	}
+	
 	public void LoadTableFunc() {
 		DefaultTableModel modelo = new DefaultTableModel(new Object[] { "Nome", "Idade","Empresa" }, 0);
 		tbl_func.setModel(modelo);
@@ -67,6 +70,14 @@ public class PrincipalView extends JFrame {
 		cb_func_emp.addItem("Selecione");
 		for (int i = 0; i < ListaEmp.size(); i++) {
 			cb_func_emp.addItem(ListaEmp.get(i).getNome());
+		}
+	}
+	
+	public void LoadCbCli() {
+		cb_cli_emp.removeAllItems();
+		cb_cli_emp.addItem("Selecione");
+		for (int i = 0; i < ListaEmp.size(); i++) {
+			cb_cli_emp.addItem(ListaEmp.get(i).getNome());
 		}
 	}
 	
@@ -110,6 +121,7 @@ public class PrincipalView extends JFrame {
 				try {
 					PrincipalView frame = new PrincipalView();
 					frame.setVisible(true);
+					frame.setIconImage(Toolkit.getDefaultToolkit().getImage("img\\iconeVictor.png"));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -411,7 +423,7 @@ public class PrincipalView extends JFrame {
 		btn_emp_excluir.setBackground(new Color(128, 0, 0));
 
 		JLabel fundo = new JLabel("New label");
-		fundo.setIcon(new ImageIcon("..\\ApsPOO\\img\\oi.jpg"));
+		fundo.setIcon(new ImageIcon("img\\oi.jpg"));
 		fundo.setBounds(0, 0, 411, 334);
 		panel.add(fundo);
 
@@ -507,7 +519,12 @@ public class PrincipalView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int index = cb_func_emp.getSelectedIndex();
 				if(index==0) {
-					JOptionPane.showInputDialog(this,"Você deve selecionar uma empresa");
+					//JOptionPane.showInputDialog(this,"Você deve selecionar uma empresa");
+					JOptionPane.showConfirmDialog(null,
+							"Você deve selecionar uma empresa",
+			                "Erro",
+			                JOptionPane.DEFAULT_OPTION,
+			                JOptionPane.PLAIN_MESSAGE);
 				}else {
 					Funcionario F = new Funcionario();
 					F.setIdade(Integer.parseInt(c_func_idade.getText()));
@@ -568,7 +585,7 @@ public class PrincipalView extends JFrame {
 		panel_4.add(btn_func_excluir);
 		
 		JLabel lblNewLabel_7 = new JLabel("New label");
-		lblNewLabel_7.setIcon(new ImageIcon("..\\ApsPOO\\img\\oi.jpg"));
+		lblNewLabel_7.setIcon(new ImageIcon("img\\oi.jpg"));
 		lblNewLabel_7.setBounds(-16, -13, 413, 350);
 		panel_4.add(lblNewLabel_7);
 
@@ -683,7 +700,7 @@ public class PrincipalView extends JFrame {
 		panel_4_1.add(btn_cli_excluir);
 		
 		JLabel lblNewLabel_7_1 = new JLabel("New label");
-		lblNewLabel_7_1.setIcon(new ImageIcon("..\\ApsPOO\\img\\oi.jpg"));
+		lblNewLabel_7_1.setIcon(new ImageIcon("img\\oi.jpg"));
 		lblNewLabel_7_1.setBounds(-16, -13, 413, 350);
 		panel_4_1.add(lblNewLabel_7_1);
 
