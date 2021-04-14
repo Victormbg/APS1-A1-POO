@@ -1,22 +1,23 @@
 package com.suam.view;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
-import javax.swing.JDesktopPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.suam.av1.Cliente;
 import com.suam.av1.Empresa;
+import com.suam.av1.Funcionario;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import javax.swing.border.BevelBorder;
@@ -26,10 +27,19 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
+@SuppressWarnings("unchecked")
 public class PrincipalView extends JFrame {
 	ArrayList<Empresa> ListaEmp;
-
+	ArrayList<Funcionario> ListaFunc;
+	ArrayList<Cliente> ListaCli;
+	String modoEmp = new String();
+	String modoFunc = new String();
+	
 	public void LoadTableEmp() {
 		DefaultTableModel modelo = new DefaultTableModel(new Object[] { "Nome", "cnpj" }, 0);
 		tbl_emp.setModel(modelo);
@@ -38,12 +48,58 @@ public class PrincipalView extends JFrame {
 			Object linha[] = new Object[] { ListaEmp.get(i).getNome(), ListaEmp.get(i).getCnpj() };
 			modelo.addRow(linha);
 		}
+		LoadCbEmp();
 	}
+	public void LoadTableFunc() {
+		DefaultTableModel modelo = new DefaultTableModel(new Object[] { "Nome", "Idade","Empresa" }, 0);
+		tbl_func.setModel(modelo);
 
-	private JPanel contentPane;
-	private JTable tbl_emp;
-	private JTextField c_emp_nome;
-	private JTextField c_emp_cnpj;
+		for (int i = 0; i < ListaFunc.size(); i++) {
+			Object linha[] = new Object[] { ListaFunc.get(i).getNome(),
+											ListaFunc.get(i).getIdade(),
+											ListaFunc.get(i).getEmp().getNome()};
+			modelo.addRow(linha);
+		}
+	}
+	
+	public void LoadCbEmp() {
+		cb_func_emp.removeAllItems();
+		cb_func_emp.addItem("Selecione");
+		for (int i = 0; i < ListaEmp.size(); i++) {
+			cb_func_emp.addItem(ListaEmp.get(i).getNome());
+		}
+	}
+	
+
+	private JPanel contentPane = new JPanel();
+	private JTable tbl_emp = new JTable();;
+	private JTextField c_emp_nome = new JTextField();
+	private JTextField c_emp_cnpj = new JTextField();
+	private JButton btn_emp_salvar = new JButton();
+	private JButton btn_emp_cancelar = new JButton();
+	private JButton btn_emp_novo = new JButton();
+	private JButton btn_emp_editar = new JButton();
+	private JButton btn_emp_excluir = new JButton();
+	
+	private JTable tbl_func = new JTable();;
+	private JTextField  c_func_nome = new JTextField();
+	private JTextField c_func_idade = new JTextField();
+	private JButton btn_func_salvar = new JButton();
+	private JButton btn_func_cancelar = new JButton();
+	private JButton btn_func_novo = new JButton();
+	private JButton btn_func_editar = new JButton();
+	private JButton btn_func_excluir = new JButton();
+	private JComboBox cb_func_emp= new JComboBox();
+	
+	private JTable tbl_cli = new JTable();;
+	private JTextField  c_cli_nome = new JTextField();
+	private JTextField c_cli_idade = new JTextField();
+	private JButton btn_cli_salvar = new JButton();
+	private JButton btn_cli_cancelar = new JButton();
+	private JButton btn_cli_novo = new JButton();
+	private JButton btn_cli_editar = new JButton();
+	private JButton btn_cli_excluir = new JButton();
+	private JComboBox cb_cli_emp = new JComboBox();	
 
 	/**
 	 * Launch the application.
@@ -54,7 +110,6 @@ public class PrincipalView extends JFrame {
 				try {
 					PrincipalView frame = new PrincipalView();
 					frame.setVisible(true);
-					frame.setIconImage(Toolkit.getDefaultToolkit().getImage("img\\iconeVictor.png"));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -65,12 +120,121 @@ public class PrincipalView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	public void ManipulaInterfaceEmp() {
+		switch ("modoEmp") {
+		case "Navegar":
+			btn_emp_salvar.setEnabled(false);
+			btn_emp_cancelar.setEnabled(false);
+			c_emp_nome.setEnabled(false);
+			c_emp_cnpj.setEnabled(false);
+			btn_emp_novo.setEnabled(true);
+			btn_emp_editar.setEnabled(false);
+			btn_emp_excluir.setEnabled(false);
+			break;
+		case "Novo":
+			btn_emp_salvar.setEnabled(true);
+			btn_emp_cancelar.setEnabled(true);
+			c_emp_nome.setEnabled(true);
+			c_emp_cnpj.setEnabled(true);
+			btn_emp_novo.setEnabled(false);
+			btn_emp_editar.setEnabled(false);
+			btn_emp_excluir.setEnabled(false);
+			break;
+		case "Editar":
+			btn_emp_salvar.setEnabled(true);
+			btn_emp_cancelar.setEnabled(true);
+			c_emp_nome.setEnabled(true);
+			c_emp_cnpj.setEnabled(true);
+			btn_emp_novo.setEnabled(true);
+			btn_emp_editar.setEnabled(false);
+			btn_emp_excluir.setEnabled(false);
+			break;
+		case "Excluir":
+			btn_emp_salvar.setEnabled(false);
+			btn_emp_cancelar.setEnabled(false);
+			c_emp_nome.setEnabled(false);
+			c_emp_cnpj.setEnabled(false);
+			btn_emp_novo.setEnabled(true);
+			btn_emp_editar.setEnabled(false);
+			btn_emp_excluir.setEnabled(false);
+			break;
+		case "Selecao":
+			btn_emp_salvar.setEnabled(false);
+			btn_emp_cancelar.setEnabled(false);
+			c_emp_nome.setEnabled(false);
+			c_emp_cnpj.setEnabled(false);
+			btn_emp_novo.setEnabled(true);
+			btn_emp_editar.setEnabled(true);
+			btn_emp_excluir.setEnabled(true);
+            break;
+		default:
+			System.out.println("Modo invalido");
+
+		}
+	}
+	
+	public void ManipulaInterfaceFunc() {
+		switch ("modoFunc") {
+		case "Navegar":
+			btn_func_salvar.setEnabled(false);
+			btn_func_cancelar.setEnabled(false);
+			c_func_nome.setEnabled(false);
+			c_func_idade.setEnabled(false);
+			btn_func_novo.setEnabled(true);
+			btn_func_editar.setEnabled(false);
+			btn_func_excluir.setEnabled(false);
+			break;
+		case "Novo":
+			btn_func_salvar.setEnabled(false);
+			btn_func_cancelar.setEnabled(false);
+			c_func_nome.setEnabled(false);
+			c_func_idade.setEnabled(false);
+			btn_func_novo.setEnabled(true);
+			btn_func_editar.setEnabled(false);
+			btn_func_excluir.setEnabled(false);
+			break;
+		case "Editar":
+			btn_func_salvar.setEnabled(false);
+			btn_func_cancelar.setEnabled(false);
+			c_func_nome.setEnabled(false);
+			c_func_idade.setEnabled(false);
+			btn_func_novo.setEnabled(true);
+			btn_func_editar.setEnabled(false);
+			btn_func_excluir.setEnabled(false);
+			break;
+		case "Excluir":
+			btn_func_salvar.setEnabled(false);
+			btn_func_cancelar.setEnabled(false);
+			c_func_nome.setEnabled(false);
+			c_func_idade.setEnabled(false);
+			btn_func_novo.setEnabled(true);
+			btn_func_editar.setEnabled(false);
+			btn_func_excluir.setEnabled(false);
+			break;
+		case "Selecao":
+			btn_func_salvar.setEnabled(false);
+			btn_func_cancelar.setEnabled(false);
+			c_func_nome.setEnabled(false);
+			c_func_idade.setEnabled(false);
+			btn_func_novo.setEnabled(true);
+			btn_func_editar.setEnabled(false);
+			btn_func_excluir.setEnabled(false);
+            break;
+		default:
+			System.out.println("Modo invalido");
+
+		}
+	}
+
 
 	public PrincipalView() {
+		ManipulaInterfaceEmp();
+		modoEmp = "Novo";
+		ManipulaInterfaceFunc();
 		ListaEmp = new ArrayList();
-
+		ListaFunc = new ArrayList();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 408, 360);
+		setBounds(100, 100, 408, 383);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -78,15 +242,27 @@ public class PrincipalView extends JFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setToolTipText("");
-		tabbedPane.setBounds(0, 0, 392, 321);
+		tabbedPane.setBounds(0, 0, 392, 344);
 		contentPane.add(tabbedPane);
 
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Empresa", null, panel, null);
 
 		tbl_emp = new JTable();
-		tbl_emp.setCellSelectionEnabled(true);
-		tbl_emp.setEnabled(false);
+		tbl_emp.setColumnSelectionAllowed(true);
+		tbl_emp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int index = tbl_emp.getSelectedRow();
+				if(index>=0 && index<ListaEmp.size()) {
+					Empresa E = ListaEmp.get(index);
+					c_emp_nome.setText(E.getNome());
+					c_emp_cnpj.setText(E.cnpj);
+					modoEmp = "Selecao";
+					ManipulaInterfaceEmp();
+				}
+			}
+		});
 		tbl_emp.setShowVerticalLines(false);
 		tbl_emp.setShowHorizontalLines(false);
 		tbl_emp.setShowGrid(false);
@@ -137,9 +313,20 @@ public class PrincipalView extends JFrame {
 		JButton btn_emp_salvar = new JButton("Salvar");
 		btn_emp_salvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(modoEmp.equals("Novo")) {
 				Empresa E = new Empresa(c_emp_nome.getText(), c_emp_cnpj.getText());
 				ListaEmp.add(E);
+				}
+				else if(modoEmp.equals("Editar")){
+					int index = tbl_emp.getSelectedRow();
+					ListaEmp.get(index).setNome(c_emp_nome.getText());
+					ListaEmp.get(index).setCnpj(c_emp_cnpj.getText());
+				}
 				LoadTableEmp();
+				modoEmp = "Navegar";
+				ManipulaInterfaceEmp();
+				c_emp_cnpj.setText("");
+				c_emp_nome.setText("");
 			}
 		});
 		btn_emp_salvar.setForeground(Color.WHITE);
@@ -172,10 +359,11 @@ public class PrincipalView extends JFrame {
 		JButton btn_emp_cancelar = new JButton("Cancelar");
 		btn_emp_cancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btn_emp_salvar.setEnabled(false);
-				btn_emp_cancelar.setEnabled(false);
-				c_emp_nome.setEnabled(false);
-				c_emp_cnpj.setEnabled(false);
+				c_emp_cnpj.setText("");
+				c_emp_nome.setText("");
+				
+				modoEmp = "Navegar";
+				ManipulaInterfaceEmp();
 			}
 		});
 		btn_emp_cancelar.setBackground(new Color(255, 0, 0));
@@ -184,6 +372,11 @@ public class PrincipalView extends JFrame {
 		panel_3.add(btn_emp_cancelar);
 
 		JButton btn_emp_editar = new JButton("Editar");
+		btn_emp_editar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
 		btn_emp_editar.setBounds(138, 129, 108, 23);
 		panel.add(btn_emp_editar);
 		btn_emp_editar.setForeground(Color.WHITE);
@@ -192,41 +385,316 @@ public class PrincipalView extends JFrame {
 		JButton btn_emp_novo = new JButton("Novo");
 		btn_emp_novo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				c_emp_nome.setText("");
-				c_emp_cnpj.setText("");
-
-				btn_emp_salvar.setEnabled(true);
-				btn_emp_cancelar.setEnabled(true);
-				c_emp_nome.setEnabled(true);
-				c_emp_cnpj.setEnabled(true);
+				modoEmp = "Novo";
+				ManipulaInterfaceEmp();
 			}
 		});
-		btn_emp_salvar.setEnabled(false);
-		btn_emp_cancelar.setEnabled(false);
-		c_emp_nome.setEnabled(false);
-		c_emp_cnpj.setEnabled(false);
 		btn_emp_novo.setBounds(20, 129, 108, 23);
 		panel.add(btn_emp_novo);
 		btn_emp_novo.setForeground(Color.WHITE);
 		btn_emp_novo.setBackground(new Color(0, 128, 128));
 
 		JButton btn_emp_excluir = new JButton("Excluir");
+		btn_emp_excluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = tbl_emp.getSelectedRow();
+				if(index>=0 && index<ListaEmp.size()) {
+					ListaEmp.remove(index);
+				}
+				LoadTableEmp();
+				ManipulaInterfaceEmp();
+			}
+		});
 		btn_emp_excluir.setBounds(256, 129, 109, 23);
 		panel.add(btn_emp_excluir);
 		btn_emp_excluir.setForeground(Color.WHITE);
 		btn_emp_excluir.setBackground(new Color(128, 0, 0));
 
-		JLabel lblNewLabel_6 = new JLabel("New label");
-		lblNewLabel_6.setIcon(new ImageIcon("img\\oi.jpg"));
-		lblNewLabel_6.setBounds(-13, -10, 400, 303);
-		panel.add(lblNewLabel_6);
+		JLabel fundo = new JLabel("New label");
+		fundo.setIcon(new ImageIcon("..\\ApsPOO\\img\\oi.jpg"));
+		fundo.setBounds(0, 0, 411, 334);
+		panel.add(fundo);
 
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Funcionario", null, panel_1, null);
 		panel_1.setLayout(null);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setLayout(null);
+		panel_4.setBounds(0, 0, 387, 316);
+		panel_1.add(panel_4);
+		
+		tbl_func = new JTable();
+		tbl_func.setShowGrid(false);
+		tbl_func.setShowHorizontalLines(false);
+		tbl_func.setShowVerticalLines(false);
+		tbl_func.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Nome", "Idade", "Empresa"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, Integer.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		tbl_func.getColumnModel().getColumn(0).setPreferredWidth(120);
+		tbl_func.getColumnModel().getColumn(1).setPreferredWidth(46);
+		tbl_func.getColumnModel().getColumn(2).setPreferredWidth(120);
+		tbl_func.setForeground(Color.WHITE);
+		tbl_func.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		tbl_func.setColumnSelectionAllowed(true);
+		tbl_func.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.BLACK, Color.DARK_GRAY, Color.BLACK, Color.DARK_GRAY));
+		tbl_func.setBackground(Color.BLACK);
+		tbl_func.setBounds(10, 40, 367, 78);
+		panel_4.add(tbl_func);
+		
+		JLabel lblNewLabel_3 = new JLabel("Empresa");
+		lblNewLabel_3.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 12));
+		lblNewLabel_3.setForeground(Color.WHITE);
+		lblNewLabel_3.setBounds(268, 15, 70, 14);
+		panel_4.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_2 = new JLabel("Nome");
+		lblNewLabel_2.setForeground(Color.WHITE);
+		lblNewLabel_2.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 13));
+		lblNewLabel_2.setBounds(20, 15, 46, 14);
+		panel_4.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("Idade");
+		lblNewLabel_1_1.setForeground(Color.WHITE);
+		lblNewLabel_1_1.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 13));
+		lblNewLabel_1_1.setBounds(183, 15, 39, 14);
+		panel_4.add(lblNewLabel_1_1);
+		
+		JPanel panel_3_1 = new JPanel();
+		panel_3_1.setLayout(null);
+		panel_3_1.setToolTipText("Dados");
+		panel_3_1.setOpaque(false);
+		panel_3_1.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, new Color(64, 64, 64), new Color(192, 192, 192), new Color(128, 128, 128), new Color(128, 128, 128)), "Dados", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		panel_3_1.setBackground(Color.RED);
+		panel_3_1.setBounds(10, 159, 367, 147);
+		panel_4.add(panel_3_1);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("Nome:");
+		lblNewLabel_4_1.setForeground(Color.WHITE);
+		lblNewLabel_4_1.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		lblNewLabel_4_1.setBounds(10, 29, 43, 14);
+		panel_3_1.add(lblNewLabel_4_1);
+		
+		JLabel lblNewLabel_5_1 = new JLabel("Idade:");
+		lblNewLabel_5_1.setForeground(Color.WHITE);
+		lblNewLabel_5_1.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		lblNewLabel_5_1.setBounds(10, 56, 43, 14);
+		panel_3_1.add(lblNewLabel_5_1);
+		
+		c_func_nome = new JTextField();
+		c_func_nome.setColumns(10);
+		c_func_nome.setBounds(58, 27, 299, 20);
+		panel_3_1.add(c_func_nome);
+		
+		c_func_idade = new JTextField();
+		c_func_idade.setColumns(10);
+		c_func_idade.setBounds(58, 54, 299, 20);
+		panel_3_1.add(c_func_idade);
+		
+		JButton btn_func_salvar = new JButton("Salvar");
+		btn_func_salvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = cb_func_emp.getSelectedIndex();
+				if(index==0) {
+					JOptionPane.showInputDialog(this,"Você deve selecionar uma empresa");
+				}else {
+					Funcionario F = new Funcionario();
+					F.setIdade(Integer.parseInt(c_func_idade.getText()));
+					F.setNome(c_func_nome.getText());
+					F.setEmp(ListaEmp.get(index-1));
+					ListaFunc.add(F);
+					ListaEmp.get(index-1).addFunc(F);
+				}
+				LoadTableFunc();
+				c_func_idade.setText("");
+				c_func_nome.setText("");
+			}
+		});
+		btn_func_salvar.setBounds(86, 113, 111, 23);
+		panel_3_1.add(btn_func_salvar);
+		btn_func_salvar.setForeground(Color.WHITE);
+		btn_func_salvar.setBackground(new Color(0, 128, 0));
+		
+		btn_func_cancelar = new JButton("Cancelar");
+		btn_func_cancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btn_func_cancelar.setBounds(207, 113, 111, 23);
+		panel_3_1.add(btn_func_cancelar);
+		btn_func_cancelar.setForeground(Color.WHITE);
+		btn_func_cancelar.setBackground(Color.RED);
+		
+		JLabel lblNewLabel_6 = new JLabel("Empresa");
+		lblNewLabel_6.setForeground(Color.WHITE);
+		lblNewLabel_6.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		lblNewLabel_6.setBounds(10, 87, 64, 14);
+		panel_3_1.add(lblNewLabel_6);
+		
+		cb_func_emp = new JComboBox();
+		cb_func_emp.setForeground(new Color(255, 255, 255));
+		cb_func_emp.setBackground(new Color(0, 0, 0));
+		cb_func_emp.setModel(new DefaultComboBoxModel(new String[] {"  Nao h\u00E1 empresa cadastrada"}));
+		cb_func_emp.setBounds(68, 84, 289, 22);
+		panel_3_1.add(cb_func_emp);
+		
+		JButton btn_func_editar = new JButton("Editar");
+		btn_func_editar.setForeground(Color.WHITE);
+		btn_func_editar.setBackground(new Color(128, 128, 0));
+		btn_func_editar.setBounds(138, 129, 108, 23);
+		panel_4.add(btn_func_editar);
+		
+		JButton btn_func_novo = new JButton("Novo");
+		btn_func_novo.setForeground(Color.WHITE);
+		btn_func_novo.setBackground(new Color(0, 128, 128));
+		btn_func_novo.setBounds(20, 129, 108, 23);
+		panel_4.add(btn_func_novo);
+		
+		JButton btn_func_excluir = new JButton("Excluir");
+		btn_func_excluir.setForeground(Color.WHITE);
+		btn_func_excluir.setBackground(new Color(128, 0, 0));
+		btn_func_excluir.setBounds(256, 129, 109, 23);
+		panel_4.add(btn_func_excluir);
+		
+		JLabel lblNewLabel_7 = new JLabel("New label");
+		lblNewLabel_7.setIcon(new ImageIcon("..\\ApsPOO\\img\\oi.jpg"));
+		lblNewLabel_7.setBounds(-16, -13, 413, 350);
+		panel_4.add(lblNewLabel_7);
 
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Cliente", null, panel_2, null);
 		panel_2.setLayout(null);
+		
+		JPanel panel_4_1 = new JPanel();
+		panel_4_1.setLayout(null);
+		panel_4_1.setBounds(0, 0, 387, 316);
+		panel_2.add(panel_4_1);
+		
+		tbl_cli = new JTable();
+		tbl_cli.setShowVerticalLines(false);
+		tbl_cli.setShowHorizontalLines(false);
+		tbl_cli.setShowGrid(false);
+		tbl_cli.setForeground(Color.WHITE);
+		tbl_cli.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		tbl_cli.setColumnSelectionAllowed(true);
+		tbl_cli.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.BLACK, Color.DARK_GRAY, Color.BLACK, Color.DARK_GRAY));
+		tbl_cli.setBackground(Color.BLACK);
+		tbl_cli.setBounds(10, 40, 367, 78);
+		panel_4_1.add(tbl_cli);
+		
+		JLabel lblNewLabel_3_1 = new JLabel("Empresa");
+		lblNewLabel_3_1.setForeground(Color.WHITE);
+		lblNewLabel_3_1.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 12));
+		lblNewLabel_3_1.setBounds(268, 15, 70, 14);
+		panel_4_1.add(lblNewLabel_3_1);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("Nome");
+		lblNewLabel_2_1.setForeground(Color.WHITE);
+		lblNewLabel_2_1.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 13));
+		lblNewLabel_2_1.setBounds(20, 15, 46, 14);
+		panel_4_1.add(lblNewLabel_2_1);
+		
+		JLabel lblNewLabel_1_1_1 = new JLabel("Idade");
+		lblNewLabel_1_1_1.setForeground(Color.WHITE);
+		lblNewLabel_1_1_1.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 13));
+		lblNewLabel_1_1_1.setBounds(183, 15, 39, 14);
+		panel_4_1.add(lblNewLabel_1_1_1);
+		
+		JPanel panel_3_1_1 = new JPanel();
+		panel_3_1_1.setLayout(null);
+		panel_3_1_1.setToolTipText("Dados");
+		panel_3_1_1.setOpaque(false);
+		panel_3_1_1.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, new Color(64, 64, 64), new Color(192, 192, 192), new Color(128, 128, 128), new Color(128, 128, 128)), "Dados", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		panel_3_1_1.setBackground(Color.RED);
+		panel_3_1_1.setBounds(10, 159, 367, 147);
+		panel_4_1.add(panel_3_1_1);
+		
+		JLabel lblNewLabel_4_1_1 = new JLabel("Nome:");
+		lblNewLabel_4_1_1.setForeground(Color.WHITE);
+		lblNewLabel_4_1_1.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		lblNewLabel_4_1_1.setBounds(10, 29, 43, 14);
+		panel_3_1_1.add(lblNewLabel_4_1_1);
+		
+		JLabel lblNewLabel_5_1_1 = new JLabel("Idade:");
+		lblNewLabel_5_1_1.setForeground(Color.WHITE);
+		lblNewLabel_5_1_1.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		lblNewLabel_5_1_1.setBounds(10, 56, 43, 14);
+		panel_3_1_1.add(lblNewLabel_5_1_1);
+		
+		c_cli_nome = new JTextField();
+		c_cli_nome.setColumns(10);
+		c_cli_nome.setBounds(58, 27, 299, 20);
+		panel_3_1_1.add(c_cli_nome);
+		
+		c_cli_idade = new JTextField();
+		c_cli_idade.setColumns(10);
+		c_cli_idade.setBounds(58, 54, 299, 20);
+		panel_3_1_1.add(c_cli_idade);
+		
+		JButton btn_cli_salvar = new JButton("Salvar");
+		btn_cli_salvar.setForeground(Color.WHITE);
+		btn_cli_salvar.setBackground(new Color(0, 128, 0));
+		btn_cli_salvar.setBounds(86, 113, 111, 23);
+		panel_3_1_1.add(btn_cli_salvar);
+		
+		JButton btn_cli_cancelar = new JButton("Cancelar");
+		btn_cli_cancelar.setForeground(Color.WHITE);
+		btn_cli_cancelar.setBackground(Color.RED);
+		btn_cli_cancelar.setBounds(207, 113, 111, 23);
+		panel_3_1_1.add(btn_cli_cancelar);
+		
+		JComboBox cb_cli_emp = new JComboBox();
+		cb_cli_emp.setBounds(68, 85, 289, 22);
+		panel_3_1_1.add(cb_cli_emp);
+		
+		JLabel lblNewLabel_6_1 = new JLabel("Empresa");
+		lblNewLabel_6_1.setForeground(Color.WHITE);
+		lblNewLabel_6_1.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+		lblNewLabel_6_1.setBounds(10, 87, 64, 14);
+		panel_3_1_1.add(lblNewLabel_6_1);
+		
+		JButton btn_cli_editar = new JButton("Editar");
+		btn_cli_editar.setForeground(Color.WHITE);
+		btn_cli_editar.setBackground(new Color(128, 128, 0));
+		btn_cli_editar.setBounds(138, 129, 108, 23);
+		panel_4_1.add(btn_cli_editar);
+		
+		JButton btn_cli_novo = new JButton("Novo");
+		btn_cli_novo.setForeground(Color.WHITE);
+		btn_cli_novo.setBackground(new Color(0, 128, 128));
+		btn_cli_novo.setBounds(20, 129, 108, 23);
+		panel_4_1.add(btn_cli_novo);
+		
+		JButton btn_cli_excluir = new JButton("Excluir");
+		btn_cli_excluir.setForeground(Color.WHITE);
+		btn_cli_excluir.setBackground(new Color(128, 0, 0));
+		btn_cli_excluir.setBounds(256, 129, 109, 23);
+		panel_4_1.add(btn_cli_excluir);
+		
+		JLabel lblNewLabel_7_1 = new JLabel("New label");
+		lblNewLabel_7_1.setIcon(new ImageIcon("..\\ApsPOO\\img\\oi.jpg"));
+		lblNewLabel_7_1.setBounds(-16, -13, 413, 350);
+		panel_4_1.add(lblNewLabel_7_1);
+
+		// ================DESATIVAR OS BOTÕES AO INICIAR=============================
+		/*
+		 * btn_emp_salvar.setEnabled(false); btn_emp_cancelar.setEnabled(false);
+		 * c_emp_nome.setEnabled(false); c_emp_cnpj.setEnabled(false);
+		 * btn_emp_novo.setEnabled(true); btn_emp_editar.setEnabled(false);
+		 * btn_emp_excluir.setEnabled(false);
+		 */
+		// =============================================
+
 	}
 }
