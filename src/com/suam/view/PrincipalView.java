@@ -181,7 +181,6 @@ public class PrincipalView extends JFrame {
             break;
 		default:
 			System.out.println("Modo invalido");
-
 		}
 	}
 	
@@ -519,7 +518,6 @@ public class PrincipalView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int index = cb_func_emp.getSelectedIndex();
 				if(index==0) {
-					//JOptionPane.showInputDialog(this,"Você deve selecionar uma empresa");
 					JOptionPane.showConfirmDialog(null,
 							"Você deve selecionar uma empresa",
 			                "Erro",
@@ -538,6 +536,7 @@ public class PrincipalView extends JFrame {
 				c_func_nome.setText("");
 			}
 		});
+
 		btn_func_salvar.setBounds(86, 113, 111, 23);
 		panel_3_1.add(btn_func_salvar);
 		btn_func_salvar.setForeground(Color.WHITE);
@@ -562,7 +561,7 @@ public class PrincipalView extends JFrame {
 		cb_func_emp = new JComboBox();
 		cb_func_emp.setForeground(new Color(255, 255, 255));
 		cb_func_emp.setBackground(new Color(0, 0, 0));
-		cb_func_emp.setModel(new DefaultComboBoxModel(new String[] {"  Nao h\u00E1 empresa cadastrada"}));
+		cb_func_emp.setModel(new DefaultComboBoxModel(new String[] {"  Não h\u00E1 empresa cadastrada"}));
 		cb_func_emp.setBounds(68, 84, 289, 22);
 		panel_3_1.add(cb_func_emp);
 		
@@ -672,7 +671,10 @@ public class PrincipalView extends JFrame {
 		panel_3_1_1.add(btn_cli_cancelar);
 		
 		JComboBox cb_cli_emp = new JComboBox();
-		cb_cli_emp.setBounds(68, 85, 289, 22);
+		cb_cli_emp.setModel(new DefaultComboBoxModel(new String[] {" Não h\u00E1 empresa cadastrada"}));
+		cb_cli_emp.setForeground(Color.WHITE);
+		cb_cli_emp.setBackground(Color.BLACK);
+		cb_cli_emp.setBounds(68, 84, 289, 22);
 		panel_3_1_1.add(cb_cli_emp);
 		
 		JLabel lblNewLabel_6_1 = new JLabel("Empresa");
@@ -703,15 +705,6 @@ public class PrincipalView extends JFrame {
 		lblNewLabel_7_1.setIcon(new ImageIcon("img\\oi.jpg"));
 		lblNewLabel_7_1.setBounds(-16, -13, 413, 350);
 		panel_4_1.add(lblNewLabel_7_1);
-
-		// ================DESATIVAR OS BOTÕES AO INICIAR=============================
-		/*
-		 * btn_emp_salvar.setEnabled(false); btn_emp_cancelar.setEnabled(false);
-		 * c_emp_nome.setEnabled(false); c_emp_cnpj.setEnabled(false);
-		 * btn_emp_novo.setEnabled(true); btn_emp_editar.setEnabled(false);
-		 * btn_emp_excluir.setEnabled(false);
-		 */
-		// =============================================
 
 	}
 }
