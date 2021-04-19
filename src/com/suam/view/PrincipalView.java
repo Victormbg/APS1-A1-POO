@@ -355,6 +355,8 @@ public class PrincipalView extends JFrame {
 					ListaEmp.remove(index);
 				}
 				LoadTableEmp();
+				c_emp_cnpj.setText("");
+				c_emp_nome.setText("");
 				cb_func_emp.removeAllItems();
 				cb_func_emp.addItem(" Não há empresa cadastrada");
 				cb_cli_emp.removeAllItems();
@@ -373,6 +375,7 @@ public class PrincipalView extends JFrame {
 		btn_emp_excluir.setBackground(new Color(128, 0, 0));
 
 		JLabel fundo = new JLabel("New label");
+		fundo.setBackground(Color.BLACK);
 		fundo.setIcon(new ImageIcon("img\\oi.jpg"));
 		fundo.setBounds(0, 0, 411, 334);
 		Empresa_tblEmpresa.add(fundo);
